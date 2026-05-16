@@ -1,0 +1,18 @@
+{
+  "models": {
+    "providers": {
+      "ollama": {
+        "api": "ollama",
+        "baseUrl": "http://127.0.0.1:11434",
+        "apiKey": "ollama-local"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "ollama/gemma4:e4b"
+      }
+    }
+  }
+}

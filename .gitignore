@@ -1,0 +1,14 @@
+# Local secrets
+.env
+.env.local
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Runtime
+node_modules/
+*.log
+/tmp/
