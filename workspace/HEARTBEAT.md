@@ -1,18 +1,19 @@
-# HEARTBEAT.md — Patrol checklist
+# HEARTBEAT.md — Patrol checklist (reference, opt-in)
 
-> Fired by OpenClaw heartbeat every 30 min (configured in `openclaw.json` →
-> `agents.defaults.heartbeat`). Think of this file as the "patrol
-> checklist" of a security guard, not an alarm clock — I check what
-> needs attention, I don't broadcast.
+> **Not active by default.** The repo carries no cron-job installer.
+> When the user wants periodic self-checks, they register them via
+> `openclaw cron add ...` (see TOOLS.md). This file is the playbook
+> those jobs (or a manual `openclaw agent --message "heartbeat:patrol"`)
+> follow.
 >
 > Hard cap: 60 s wall on CPU, 30 s on GPU. Skip remaining steps if hit.
-> Skip the entire patrol if the user is mid-conversation
-> (`agents.defaults.heartbeat.skipWhenBusy: true`).
+> Skip the entire patrol if the user is mid-conversation.
 
 ## Triggers
 
-- Cron: every N minutes (default 30 min).
-- Manual: user says "heartbeat now" or `openclaw agent --message "heartbeat"`.
+- Manual: user says "heartbeat now" or
+  `node openclaw/openclaw.mjs agent --agent main --message "heartbeat:patrol"`.
+- Cron: only when registered via `openclaw cron add ...` (see TOOLS.md).
 
 ## Per-task cadences
 

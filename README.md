@@ -1,108 +1,97 @@
 # My_Secure_Claw — Clawbot
 
-A fully local personal AI assistant. OpenClaw shell around a Gemma 4 brain via
-Ollama, with a curated cognitive workspace (persona + memory + semantic
-knowledge), nomic-embed-text RAG, and a single-point model switcher between
-local CPU, local GPU, and a dormant cloud slot.
+A fully local personal AI assistant. **OpenClaw stays original** — we add
+only one thing: a curated cognitive workspace (persona + memory +
+semantic knowledge) that gets dropped into a vanilla OpenClaw install.
 
-OpenClaw itself lives as a git submodule under `./openclaw/`. We **configure**
-OpenClaw — we never modify its internals.
+No custom `openclaw.json`. No custom switcher. No autonomy cron. Use the
+upstream wizard, then layer the mind on top.
 
 ## Layout
 
 ```
 .
-├── openclaw/               # git submodule — upstream OpenClaw
-├── openclaw.json           # gateway config (lean, CPU-tuned)
-├── workspace/              # Clawbot's MIND (loaded into agent context)
-│   ├── IDENTITY.md         # who I am
-│   ├── SOUL.md             # persona, voice, values, working style
-│   ├── USER.md             # what I know about the human (main session only)
-│   ├── MEMORY.md           # iron-law rules + curated long-term memory
-│   ├── TOOLS.md            # what I can do, what I can't
-│   ├── HEARTBEAT.md        # periodic self-reflection playbook
-│   ├── AGENTS.md           # boot sequence + operating rules
-│   ├── memory/YYYY-MM-DD.md   # daily session logs
-│   └── knowledge/          # semantic knowledge tree (RAG)
-│       ├── clawbot-self.md
-│       ├── openclaw.md
-│       ├── ollama.md
-│       └── hardware.md
-├── docs/                   # operator-facing docs (NOT bot content)
-│   ├── MODELS.md           # model-switcher reference
-│   └── setup-gpu.md        # PC + RTX 3070 production install guide
-├── scripts/
-│   ├── setup.sh            # one-shot bootstrap (submodule + pnpm + Ollama + models)
-│   ├── claw-model.sh       # single switch point between model slots
-│   ├── bench-model.sh      # direct Ollama API latency check
-│   └── agent-bench.sh      # full agent-harness latency matrix
-└── SECURITY.md             # what runs as root, migration plan to non-root
+├── openclaw/         git submodule — upstream OpenClaw, untouched
+├── workspace/        Clawbot's MIND (this is the only authored content)
+│   ├── IDENTITY.md
+│   ├── SOUL.md       persona, voice, working style
+│   ├── USER.md       what the bot knows about its human
+│   ├── MEMORY.md     iron-law rules + curated long-term memory
+│   ├── TOOLS.md      what the bot can do, what it can't
+│   ├── HEARTBEAT.md  reference playbook (manual cron later)
+│   ├── AGENTS.md     boot sequence + per-turn loop
+│   ├── knowledge/    semantic notes (loaded on demand via RAG)
+│   ├── learnings/    structured self-learning files
+│   ├── goals/        explicit goal queue
+│   └── digests/      daily / weekly / monthly reflections (empty)
+├── docs/             operator-facing reference
+│   └── MIND.md       what each workspace file is for
+└── scripts/
+    └── install-mind.sh   overlay workspace into ~/.openclaw/workspace
 ```
 
-## Requirements
-
-- Linux / macOS / Windows + WSL2
-- Node **22.16+** or **24**
-- pnpm 10+
-- ~12 GB free disk (Gemma 4 e2b + phi4-mini + nomic-embed-text)
-- 16 GB RAM minimum; PC production target = RTX 3070 / 8 GB VRAM
-
-## Quick start
+## 3-step install on your PC (WSL2 + RTX 3070)
 
 ```bash
+# 1. Toolchain (one time): WSL2 Ubuntu 24.04, NVIDIA driver on Windows
+#    (https://nvidia.com/drivers), Node 22 (via nvm), pnpm, Ollama.
+#    See docs/SETUP.md for the full list.
+
+# 2. Clone + build OpenClaw + onboard with the upstream wizard
 git clone --recurse-submodules https://github.com/BEKO2210/My_Secure_Claw.git
 cd My_Secure_Claw
-./scripts/setup.sh
-cp .env.example .env       # then: openssl rand -hex 32 → OPENCLAW_GATEWAY_TOKEN
-ollama pull nomic-embed-text                                # RAG embeddings
-ollama pull qwen2.5:7b-instruct-q4_K_M                      # if you have GPU
-(cd openclaw && node openclaw.mjs memory index)             # build RAG index
-./scripts/claw-model.sh cpu        # or `gpu-local` on the PC
+(cd openclaw && pnpm install --frozen-lockfile && pnpm run build && pnpm ui:build)
+
+ollama pull qwen2.5:7b-instruct-q4_K_M    # ~4.4 GB
+ollama pull nomic-embed-text              # ~274 MB
+
+node openclaw/openclaw.mjs onboard
+# Pick: Ollama provider, qwen2.5:7b-instruct-q4_K_M model,
+# generate gateway token, optional Telegram bot token
+
+# 3. Overlay the Clawbot mind
+./scripts/install-mind.sh
+node openclaw/openclaw.mjs dashboard
 ```
 
-## Model slots
+The dashboard opens in your browser. Done.
 
-| Slot       | Model                                  | When                           |
-| ---------- | -------------------------------------- | ------------------------------ |
-| `cpu`      | `ollama/gemma4:e2b`                    | CPU box, multimodal            |
-| `gemma`    | `ollama/gemma4:e4b`                    | when ≥10 GiB RAM is truly free |
-| `phi`      | `ollama/phi4-mini`                     | tight RAM fallback             |
-| `gpu-local`| `ollama/qwen2.5:7b-instruct-q4_K_M`    | RTX 3070 production target     |
-| `cloud`    | `openrouter/openai/gpt-4o-mini`        | **dormant** — do not activate  |
+## Daily commands
 
-See `docs/MODELS.md` for measured latencies and the trade-offs.
+```bash
+node openclaw/openclaw.mjs status                          # gateway + channels
+node openclaw/openclaw.mjs models list                     # available models
+node openclaw/openclaw.mjs models set ollama/<model>       # switch model
+node openclaw/openclaw.mjs dashboard                       # open UI
+node openclaw/openclaw.mjs agent --agent main --message "Wer bist du?"
+node openclaw/openclaw.mjs memory index                    # rebuild RAG after mind edits
+```
 
-## Memory & RAG
+## Updating the mind
 
-- **Always-loaded** into the system prompt by the `memory-core` plugin:
-  IDENTITY.md, SOUL.md, MEMORY.md (main session only), USER.md (main session
-  only), TOOLS.md, AGENTS.md, HEARTBEAT.md.
-- **Searched on demand** via `memory_search` (semantic + keyword hybrid,
-  768-dim embeddings from `nomic-embed-text`): all of `workspace/knowledge/`,
-  daily logs in `workspace/memory/`, and checklists.
-- **Hard caps**: 20 000 chars per file, ~150 000 chars total for the
-  bootstrap set. Spillover goes to `knowledge/` or `docs/`.
-- **Rebuild the index**: `node openclaw/openclaw.mjs memory index`.
+Edit any file under `workspace/`, commit, push. On the PC pull, then:
 
-## Self-reflection
+```bash
+./scripts/install-mind.sh    # re-overlays + re-indexes
+```
 
-Heartbeat fires every 30 min (configurable in `openclaw.json` →
-`agents.defaults.heartbeat`). It runs the playbook in
-`workspace/HEARTBEAT.md`: skims today's daily log, surfaces follow-ups,
-proposes MEMORY.md promotions. End-of-day summary is appended to the day's
-log. Nothing is sent to the user without an explicit prompt.
+The script backs up your current `~/.openclaw/workspace/` first; rollback
+shown at the end of its output.
 
 ## Updating OpenClaw
 
 ```bash
 git submodule update --remote openclaw
-(cd openclaw && pnpm install --frozen-lockfile && pnpm run build)
-node openclaw/openclaw.mjs config validate
+(cd openclaw && pnpm install --frozen-lockfile && pnpm run build && pnpm ui:build)
+node openclaw/openclaw.mjs dashboard    # re-verify UI protocol matches
 ```
 
-## Security
+## Why no custom openclaw.json
 
-See `SECURITY.md`. The dev container runs everything as root and bind `lan`.
-For the PC install: dedicated `openclaw` system user, `systemd --user` with
-hardening (`NoNewPrivileges`, `ProtectHome=read-only`, …), token from
-`EnvironmentFile=/etc/openclaw/gateway.env` (mode 0600, owned root:openclaw).
+OpenClaw is a moving target. Every custom override is a future merge
+conflict and a candidate for breakage. The onboard wizard generates a
+config that matches the installed gateway version exactly. We layer
+content (`workspace/`), not config.
+
+If a setting truly needs to change permanently, use `openclaw config
+set <path> <value>` — that survives upstream updates.

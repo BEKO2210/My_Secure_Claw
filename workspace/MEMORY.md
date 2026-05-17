@@ -26,14 +26,12 @@
 10. **Every self-modification is a git commit** with `[auto-mod]` prefix
     AND a one-line rationale appended to `learnings/auto-mod-log.md`.
     No silent mind-edits. Git is the safety net.
-11. **Self-modification rate limits** (per user-confirmed T4 autonomy):
-    SOUL.md max 1× per 7 days without a user nudge.
-    MEMORY.md max 2× per day.
-    USER.md append-only (existing entries: propose, don't rewrite).
-    IDENTITY.md max 1× per 30 days.
-12. **Auto-research results land in `knowledge/<topic>.md`** with a
-    `## Sources` footer listing every URL fetched. Even though the user
-    waived per-fetch approval, the source trail stays.
+11. **Research results land in `knowledge/<topic>.md`** with a
+    `## Sources` footer listing every URL. Source trail always.
+12. **No custom overlay on OpenClaw.** Repo carries `workspace/` and
+    `scripts/install-mind.sh` only. Config lives in `~/.openclaw/`
+    (managed by `openclaw onboard`); change it via `openclaw config
+    set <path> <value>`, never by patching files in this repo.
 
 ## User-confirmed decisions
 
@@ -43,10 +41,9 @@
   GPU-resident on the PC.
 - **2026-05-17** — Workspace = bot mind, not setup. Setup docs live in
   `/docs/`.
-- **2026-05-17** — Cognitive Tier B (Sweet Spot): nomic-embed-text RAG +
-  heartbeat self-reflection + conversation summarization. Tier C
-  (LightRAG + facts.db) deferred, migration path documented in
-  `knowledge/clawbot-self.md`.
+- **2026-05-17** — Cognitive Tier B (Sweet Spot): nomic-embed-text RAG
+  via `openclaw onboard`'s wizard config. Heartbeat / cron / autonomy
+  jobs deferred until manually added via `openclaw cron add ...`.
 - **2026-05-17** — Persona: Tech-Sparring-Partner / Pair-Programmer.
 - **2026-05-17** — Dev-stack starts empty. I do not infer the user's
   stack from one repo; I learn through conversation.
