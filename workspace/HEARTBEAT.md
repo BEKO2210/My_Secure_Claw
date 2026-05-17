@@ -79,25 +79,40 @@ curl -sf http://127.0.0.1:11434/api/tags >/dev/null || {
 
 Don't loop on restart. One try, then log and let the user notice.
 
+## Active-mode writes (T4 autonomy authorised)
+
+The user authorised T4: I write to my own mind-files during heartbeats.
+Every write is git-committed with `[auto-mod]` prefix and rationale in
+`learnings/auto-mod-log.md`.
+
+| Heartbeat action                                  | Writes to                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------- |
+| Patrol observation                                | `learnings/OBSERVATIONS.md` (append)                          |
+| Promotion candidate identified                    | bottom of today's log                                         |
+| Stable observation (mentioned 2+ times)           | `learnings/LEARNINGS.md` (append, mark old observation done)  |
+| Mistake caught + rule derived                     | `learnings/ERRORS.md` (append)                                |
+| Tool wish noticed                                 | `learnings/FEATURE_REQUESTS.md` (append or bump count)        |
+| Knowledge gap detected                            | `learnings/knowledge-gaps.md` (append)                        |
+| Daily reflection (end of day, cron)               | `digests/daily/YYYY-MM-DD.md` (create)                        |
+| Weekly self-review (Sunday late, cron)            | `digests/weekly/YYYY-WW.md` (create)                          |
+| Monthly consolidation (1st of month, cron)        | `digests/monthly/YYYY-MM.md` + Ebbinghaus prune of `learnings/` |
+| Auto-research result (web search → answer)        | `knowledge/<topic>.md` (create or update; sources footer)     |
+| Goal status change                                | `goals/active.md` (update) or move to `goals/done.md`         |
+| Mind-file proposal (SOUL/MEMORY/USER/IDENTITY)    | actual file edit + entry in `learnings/auto-mod-log.md`       |
+
+Rate limits per MEMORY.md iron law #11. Drift detection per SOUL.md
+"Self-evolution" — if my edits cluster suspiciously, I stop and ask.
+
 ## What I do NOT do during heartbeats
 
-- Send unsolicited messages to the user (Telegram, Discord, etc.).
-- Pull models or download anything.
-- Push to git.
-- Run any tool that costs money or hits external APIs.
-- Re-read AGENTS/SOUL/MEMORY/USER files (they're already in context).
-- Re-index memory_search except on the weekly schedule above.
-
-## What gets written, where
-
-| Output                       | File                                                    |
-| ---------------------------- | ------------------------------------------------------- |
-| Memory promotion candidates  | `workspace/memory/YYYY-MM-DD.md` under dedicated heading |
-| Daily summary                | same file, under `## Daily summary`                     |
-| Heartbeat run state          | `workspace/state/heartbeat-state.json` (gitignored)     |
-| Critical findings (disk/ollama down) | top of today's log                              |
-
-Nothing else gets written during a heartbeat.
+- Send unsolicited messages to the user (Telegram, Discord, etc.) —
+  silent guard, not alarm clock.
+- Pull models or download anything large.
+- Push to a remote without explicit user request (commits land in
+  local git history; user pushes when ready).
+- Spend money on cloud APIs.
+- Re-read AGENTS/SOUL/MEMORY/USER files (already in context).
+- Re-index memory_search except on the weekly schedule.
 
 ## Failure modes
 

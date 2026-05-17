@@ -20,3 +20,6 @@ node_modules/
 /workspace/.openclaw/
 /openclaw.json.last-good
 
+
+# Heartbeat last-run tracking (auto-managed by the bot)
+/workspace/state/heartbeat-state.json
