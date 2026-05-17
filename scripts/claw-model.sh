@@ -25,12 +25,13 @@ OLLAMA_HOST="${OLLAMA_HOST:-http://127.0.0.1:11434}"
 
 resolve_slot() {
   case "$1" in
-    cloud)  echo "openrouter/openai/gpt-4o-mini" ;;
-    gemma)  echo "ollama/gemma4:e4b" ;;
-    cpu)    echo "ollama/gemma4:e2b" ;;
-    phi)    echo "ollama/phi4-mini" ;;
-    */*)    echo "$1" ;;
-    *)      return 1 ;;
+    cloud)     echo "openrouter/openai/gpt-4o-mini" ;;
+    gemma)     echo "ollama/gemma4:e4b" ;;
+    cpu)       echo "ollama/gemma4:e2b" ;;
+    phi)       echo "ollama/phi4-mini" ;;
+    gpu-local) echo "ollama/qwen2.5:7b-instruct-q4_K_M" ;;
+    */*)       echo "$1" ;;
+    *)         return 1 ;;
   esac
 }
 
@@ -40,10 +41,11 @@ show_status() {
   echo "Current agents.defaults.model.primary: $cur"
   echo
   echo "Slots:"
-  echo "  cloud   → openrouter/openai/gpt-4o-mini   (needs OPENROUTER_API_KEY)"
-  echo "  gemma   → ollama/gemma4:e4b               (10 GiB RAM, quality)"
-  echo "  cpu     → ollama/gemma4:e2b               (CPU-fast default)"
-  echo "  phi     → ollama/phi4-mini                (text-only alternative)"
+  echo "  cpu        → ollama/gemma4:e2b                   (CPU-fast default, multimodal)"
+  echo "  gemma      → ollama/gemma4:e4b                   (quality; needs ~10 GiB RAM)"
+  echo "  phi        → ollama/phi4-mini                    (text-only alternative, 2.5 GB)"
+  echo "  gpu-local  → ollama/qwen2.5:7b-instruct-q4_K_M   (GPU box only; ~4.4 GB VRAM)"
+  echo "  cloud      → openrouter/openai/gpt-4o-mini       (dormant; needs OPENROUTER_API_KEY)"
 }
 
 patch_config() {
