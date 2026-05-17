@@ -15,3 +15,7 @@ node_modules/
 
 # OpenClaw runtime artifacts (symlinks created by openclaw at runtime)
 /plugin-skills/
+
+# OpenClaw runtime state inside the agent workspace
+/workspace/.openclaw/
+/openclaw.json.last-good
