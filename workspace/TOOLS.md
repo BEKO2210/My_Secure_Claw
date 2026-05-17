@@ -3,18 +3,19 @@
 > Environment-specific. Each host has its own TOOLS.md. The user's PC will
 > override this when production-deployed.
 
-## Models (`scripts/claw-model.sh`)
+## Models
 
-| Slot       | Model                                  | When                           |
-| ---------- | -------------------------------------- | ------------------------------ |
-| `cpu`      | `ollama/gemma4:e2b`                    | dev container (4 vCPU, 15 GiB) |
-| `gemma`    | `ollama/gemma4:e4b`                    | when ≥10 GiB RAM is truly free |
-| `phi`      | `ollama/phi4-mini`                     | tight RAM fallback             |
-| `gpu-local`| `ollama/qwen2.5:7b-instruct-q4_K_M`    | PC production (RTX 3070)       |
-| `cloud`    | `openrouter/openai/gpt-4o-mini`        | DORMANT — do not activate      |
+Production model on the PC = `ollama/qwen2.5:7b-instruct-q4_K_M` (chosen
+during `openclaw onboard`, runs fully on RTX 3070, ~4.4 GB VRAM).
 
-To switch: `./scripts/claw-model.sh <slot>`.
-Status: `./scripts/claw-model.sh` (no args).
+Switch model:
+```
+node openclaw/openclaw.mjs models set ollama/<model>
+node openclaw/openclaw.mjs models list
+```
+
+The repo carries no custom switcher — OpenClaw's built-in `models set`
+is the canonical command and survives upstream updates.
 
 ## Memory & RAG
 
@@ -66,10 +67,16 @@ direct access to.
 
 ## Heartbeat
 
-- Period: every 30 min (configured in `openclaw.json` → see HEARTBEAT.md
-  for the script).
-- Job: skim open daily-log entries, summarise into MEMORY.md candidates,
-  flush stale model session.
+The `HEARTBEAT.md` playbook is a **reference** — the wizard does NOT
+register cron jobs automatically. When the user wants periodic
+self-checks, register them manually:
+
+```
+node openclaw/openclaw.mjs cron add --name patrol --cron "*/30 * * * *" \
+  --session main --system-event "Run HEARTBEAT.md patrol checklist."
+```
+
+See `node openclaw/openclaw.mjs cron --help` for the full schema.
 
 ## What I CAN do
 
@@ -78,8 +85,8 @@ direct access to.
   user request).
 - Use `memory_search` to find prior context.
 - Send Telegram messages to the paired user only (when channel is up).
-- Switch models via `scripts/claw-model.sh` (does not need user approval —
-  but always reports the switch in the reply).
+- Switch models via `openclaw models set ollama/<model>` (does not need
+  user approval — but always reports the switch in the reply).
 
 ## What I CANNOT do (refuse if asked)
 
@@ -94,8 +101,8 @@ direct access to.
 
 - Any `rm` of more than a single file the user just touched.
 - Pulling a new model >2 GB (disk pressure check first).
-- Changing `agents.defaults.model.primary` mid-conversation unless I'm
-  using the switcher script.
+- Changing `agents.defaults.model.primary` mid-conversation unless via
+  `openclaw models set` and reported in the reply.
 - Modifying SOUL.md or MEMORY.md content (the user owns these; I can
   propose changes but they confirm).
 
@@ -106,6 +113,7 @@ direct access to.
 | Gateway `/health` not responding           | `pgrep -f gateway` + `tail /tmp/gateway.log`      |
 | Agent turn timeout                         | `tail /tmp/gateway.log` for `model_call:started`  |
 | `ECONNREFUSED 127.0.0.1:11434`             | `pgrep ollama`, restart with `nohup ollama serve` |
-| Switcher fails to come up                  | `openclaw config validate`                         |
+| Dashboard "protocol mismatch"              | `node openclaw/openclaw.mjs doctor-ui --fix` or `(cd openclaw && pnpm ui:build)` + open in incognito |
+| Onboard fails                              | `openclaw config validate`                         |
 | Disk pressure                              | `df -h /` + `ollama list` (largest models first)  |
 | memory_search returns nothing              | `ollama list | grep nomic-embed-text`             |

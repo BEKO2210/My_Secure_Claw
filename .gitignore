@@ -1,6 +1,8 @@
-# Local secrets
+# Local secrets / runtime
 .env
 .env.local
+*.log
+/tmp/
 
 # Editor / OS
 .DS_Store
@@ -8,18 +10,15 @@
 .idea/
 .vscode/
 
-# Runtime
-node_modules/
-*.log
-/tmp/
-
-# OpenClaw runtime artifacts (symlinks created by openclaw at runtime)
+# OpenClaw runtime artifacts (symlinks created at runtime)
 /plugin-skills/
 
-# OpenClaw runtime state inside the agent workspace
+# Workspace bootstrap templates that `openclaw onboard` regenerates per machine
+/workspace/HEARTBEAT.md.onboard
 /workspace/.openclaw/
+/workspace/state/
+/workspace/memory/
+
+# Misc transient
 /openclaw.json.last-good
-
-
-# Heartbeat last-run tracking (auto-managed by the bot)
-/workspace/state/heartbeat-state.json
+agent-bench-results.md

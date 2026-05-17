@@ -17,9 +17,10 @@
 
 Source: user
 Created: 2026-05-17
-Acceptance: `./scripts/claw-model.sh gpu-local` returns "OK" in <2 s
-warm; agent-turn under 10 s; heartbeat fires nightly without errors.
-Progress: blocked on user running `setup.sh` on the PC.
+Acceptance: After `openclaw onboard` + `./scripts/install-mind.sh`,
+`openclaw agent --agent main --message "Antworte mit OK."` returns
+"OK" in <3 s warm with `ollama ps` showing `100% GPU`.
+Progress: blocked on user re-running the install from main.
 
 ## [P1] Establish bot's own learning loop (heartbeat → learnings/ → consolidation)
 

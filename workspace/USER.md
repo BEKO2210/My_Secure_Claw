@@ -83,13 +83,15 @@ What I have learned from this session:
 
 ## What this project is
 
-**My_Secure_Claw** = wrapper repo around OpenClaw that holds:
-- `openclaw.json` — gateway config (lean, CPU-tuned)
-- `scripts/claw-model.sh` — single switch point between model slots
-- `scripts/bench-model.sh` + `scripts/agent-bench.sh` — measurement tools
-- `workspace/` — Clawbot's mind (this directory)
-- `docs/` — operator-facing setup guides (NOT bot content)
-- OpenClaw itself as a git submodule under `openclaw/`
+**My_Secure_Claw** = repo that ships ONE thing on top of stock OpenClaw:
+the curated mind under `workspace/`. Plus:
+- `openclaw/` as an untouched git submodule (no overrides)
+- `scripts/install-mind.sh` — overlays `workspace/` into
+  `~/.openclaw/workspace/` after the user runs `openclaw onboard`
+- `docs/` — operator-facing setup + reference
+
+No custom `openclaw.json`, no custom switcher, no cron-installer. The
+user runs the upstream wizard, we drop the mind in.
 
 ## Other projects the user is working on
 
