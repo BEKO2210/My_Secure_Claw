@@ -22,7 +22,7 @@ run_once() {
   local raw
   raw=$(curl -sf "$HOST/api/generate" \
     -d "$(jq -nc --arg m "$MODEL" --arg p "$PROMPT" \
-            '{model:$m, prompt:$p, stream:false,
+            '{model:$m, prompt:$p, stream:false, think:false,
               options:{num_predict:10, num_ctx:1024, temperature:0}}')")
   jq -r --arg label "$label" --arg model "$MODEL" '
     def ms: . / 1000000 | floor;

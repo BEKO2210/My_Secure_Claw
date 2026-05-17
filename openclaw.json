@@ -1,8 +1,9 @@
 {
   "agents": {
     "defaults": {
+      "workspace": "./workspace",
       "model": {
-        "primary": "ollama/gemma4:e4b"
+        "primary": "ollama/gemma4:e2b"
       }
     }
   },
@@ -39,6 +40,106 @@
       },
       "telegram": {
         "enabled": true
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "ollama": {
+        "api": "ollama",
+        "baseUrl": "http://127.0.0.1:11434",
+        "apiKey": "OLLAMA_API_KEY",
+        "timeoutSeconds": 120,
+        "models": [
+          {
+            "id": "gemma4:e2b",
+            "name": "Gemma 4 e2b (CPU-fast, multimodal)",
+            "input": [
+              "text",
+              "image"
+            ],
+            "contextWindow": 131072,
+            "maxTokens": 8192,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsTools": true,
+              "supportsUsageInStreaming": true
+            }
+          },
+          {
+            "id": "gemma4:e4b",
+            "name": "Gemma 4 e4b (quality, needs ~10GiB RAM)",
+            "input": [
+              "text",
+              "image"
+            ],
+            "contextWindow": 131072,
+            "maxTokens": 8192,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsTools": true,
+              "supportsUsageInStreaming": true
+            }
+          },
+          {
+            "id": "phi4-mini",
+            "name": "Phi-4 mini 3.8B (text-only alternative)",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 131072,
+            "maxTokens": 8192,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsTools": true,
+              "supportsUsageInStreaming": true
+            }
+          }
+        ]
+      },
+      "openrouter": {
+        "api": "openai-completions",
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "apiKey": "OPENROUTER_API_KEY",
+        "timeoutSeconds": 60,
+        "models": [
+          {
+            "id": "openai/gpt-4o-mini",
+            "name": "OpenRouter gpt-4o-mini (cloud fast)",
+            "input": [
+              "text",
+              "image"
+            ],
+            "contextWindow": 128000,
+            "maxTokens": 16384,
+            "cost": {
+              "input": 0.15,
+              "output": 0.6,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "compat": {
+              "supportsTools": true,
+              "supportsUsageInStreaming": true
+            }
+          }
+        ]
       }
     }
   },
