@@ -17,7 +17,10 @@
         },
         "extraPaths": [
           "knowledge",
-          "checklists"
+          "checklists",
+          "learnings",
+          "goals",
+          "digests"
         ]
       },
       "heartbeat": {
@@ -234,6 +237,30 @@
   "skills": {
     "install": {
       "nodeManager": "pnpm"
+    }
+  },
+  "cron": {
+    "enabled": true,
+    "store": "~/.openclaw/cron/jobs.json",
+    "maxConcurrentRuns": 1,
+    "retry": {
+      "maxAttempts": 3,
+      "backoffMs": [
+        60000,
+        120000,
+        300000
+      ],
+      "retryOn": [
+        "rate_limit",
+        "overloaded",
+        "network",
+        "server_error"
+      ]
+    },
+    "sessionRetention": "24h",
+    "runLog": {
+      "maxBytes": "2mb",
+      "keepLines": 2000
     }
   }
 }

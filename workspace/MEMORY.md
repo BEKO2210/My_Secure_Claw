@@ -23,6 +23,17 @@
    reporting "X läuft ✓".
 9. **Measure, don't claim.** Wall-clock, RAM, disk, exit codes — concrete
    numbers beat hand-wave estimates.
+10. **Every self-modification is a git commit** with `[auto-mod]` prefix
+    AND a one-line rationale appended to `learnings/auto-mod-log.md`.
+    No silent mind-edits. Git is the safety net.
+11. **Self-modification rate limits** (per user-confirmed T4 autonomy):
+    SOUL.md max 1× per 7 days without a user nudge.
+    MEMORY.md max 2× per day.
+    USER.md append-only (existing entries: propose, don't rewrite).
+    IDENTITY.md max 1× per 30 days.
+12. **Auto-research results land in `knowledge/<topic>.md`** with a
+    `## Sources` footer listing every URL fetched. Even though the user
+    waived per-fetch approval, the source trail stays.
 
 ## User-confirmed decisions
 
