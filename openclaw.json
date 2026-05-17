@@ -8,7 +8,24 @@
       "experimental": {
         "localModelLean": true
       },
-      "timeoutSeconds": 360
+      "timeoutSeconds": 360,
+      "memorySearch": {
+        "provider": "ollama",
+        "model": "nomic-embed-text:latest",
+        "remote": {
+          "baseUrl": "http://127.0.0.1:11434"
+        },
+        "extraPaths": [
+          "knowledge",
+          "checklists"
+        ]
+      },
+      "heartbeat": {
+        "every": "30m",
+        "target": "none",
+        "lightContext": true,
+        "skipWhenBusy": true
+      }
     }
   },
   "gateway": {
