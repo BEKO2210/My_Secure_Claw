@@ -61,12 +61,23 @@ cd My_Secure_Claw
 
 ## Phase 4 — Ollama installieren + Modelle pullen
 
+> **Diese Phase nicht überspringen** — ohne Ollama-Daemon scheitern alle
+> folgenden Schritte (claw-model.sh smoke-test, memory index, agent).
+
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 # Installer erkennt 3070 automatisch ("NVIDIA GPU detected")
 
 nohup ollama serve > /tmp/ollama.log 2>&1 &
-sleep 3
+sleep 4
+
+# Verifikation: Daemon antwortet
+curl -s http://127.0.0.1:11434/api/tags
+# erwartet: {"models":[]}
+
+# Verifikation: GPU erkannt
+tail /tmp/ollama.log | grep -i nvidia
+# sollte CUDA/NVIDIA-Zeile zeigen
 
 ollama pull qwen2.5:7b-instruct-q4_K_M    # ~4.4 GB
 ollama pull nomic-embed-text              # ~274 MB für RAG
@@ -168,7 +179,7 @@ export OPENCLAW_GATEWAY_TOKEN=$(grep OPENCLAW_GATEWAY_TOKEN .env | cut -d= -f2)
 export OLLAMA_API_KEY=ollama-local
 export OPENCLAW_CONFIG_PATH=$PWD/openclaw.json
 
-node openclaw/openclaw.mjs agent --message "Wer bist du? Antworte in einem Satz."
+node openclaw/openclaw.mjs agent --agent main --message "Wer bist du? Antworte in einem Satz."
 # Erwartet: "Ich bin Clawbot, dein Tech-Sparring-Partner..."
 # Cold ~10-15 s, warm <3 s
 ```
