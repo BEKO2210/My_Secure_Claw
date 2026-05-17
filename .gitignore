@@ -20,8 +20,3 @@ node_modules/
 /workspace/.openclaw/
 /openclaw.json.last-good
 
-# Workspace bootstrap templates that `openclaw onboard` regenerates per machine
-/workspace/HEARTBEAT.md
-/workspace/SOUL.md
-/workspace/TOOLS.md
-/workspace/USER.md
