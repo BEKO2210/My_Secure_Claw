@@ -12,3 +12,6 @@
 node_modules/
 *.log
 /tmp/
+
+# OpenClaw runtime artifacts (symlinks created by openclaw at runtime)
+/plugin-skills/

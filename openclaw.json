@@ -1,18 +1,56 @@
 {
-  "models": {
-    "providers": {
-      "ollama": {
-        "api": "ollama",
-        "baseUrl": "http://127.0.0.1:11434",
-        "apiKey": "ollama-local"
-      }
-    }
-  },
   "agents": {
     "defaults": {
       "model": {
         "primary": "ollama/gemma4:e4b"
       }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "bind": "lan",
+    "port": 18789,
+    "auth": {
+      "mode": "token",
+      "token": {
+        "source": "env",
+        "provider": "default",
+        "id": "OPENCLAW_GATEWAY_TOKEN"
+      }
+    },
+    "controlUi": {
+      "enabled": true
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "plugins": {
+    "entries": {
+      "ollama": {
+        "enabled": true
+      },
+      "telegram": {
+        "enabled": true
+      }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing"
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "pnpm"
     }
   }
 }
