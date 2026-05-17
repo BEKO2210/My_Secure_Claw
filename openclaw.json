@@ -4,7 +4,11 @@
       "workspace": "./workspace",
       "model": {
         "primary": "ollama/gemma4:e2b"
-      }
+      },
+      "experimental": {
+        "localModelLean": true
+      },
+      "timeoutSeconds": 360
     }
   },
   "gateway": {
@@ -40,6 +44,27 @@
       },
       "telegram": {
         "enabled": true
+      },
+      "canvas": {
+        "enabled": false
+      },
+      "browser": {
+        "enabled": false
+      },
+      "talk-voice": {
+        "enabled": false
+      },
+      "phone-control": {
+        "enabled": false
+      },
+      "file-transfer": {
+        "enabled": false
+      },
+      "device-pair": {
+        "enabled": false
+      },
+      "memory-core": {
+        "enabled": true
       }
     }
   },
@@ -50,7 +75,7 @@
         "api": "ollama",
         "baseUrl": "http://127.0.0.1:11434",
         "apiKey": "OLLAMA_API_KEY",
-        "timeoutSeconds": 120,
+        "timeoutSeconds": 360,
         "models": [
           {
             "id": "gemma4:e2b",
@@ -59,7 +84,7 @@
               "text",
               "image"
             ],
-            "contextWindow": 131072,
+            "contextWindow": 8192,
             "maxTokens": 8192,
             "cost": {
               "input": 0,
@@ -70,6 +95,11 @@
             "compat": {
               "supportsTools": true,
               "supportsUsageInStreaming": true
+            },
+            "params": {
+              "num_ctx": 8192,
+              "keep_alive": "30m",
+              "thinking": false
             }
           },
           {
@@ -79,7 +109,7 @@
               "text",
               "image"
             ],
-            "contextWindow": 131072,
+            "contextWindow": 8192,
             "maxTokens": 8192,
             "cost": {
               "input": 0,
@@ -90,6 +120,11 @@
             "compat": {
               "supportsTools": true,
               "supportsUsageInStreaming": true
+            },
+            "params": {
+              "num_ctx": 8192,
+              "keep_alive": "30m",
+              "thinking": false
             }
           },
           {
@@ -98,7 +133,7 @@
             "input": [
               "text"
             ],
-            "contextWindow": 131072,
+            "contextWindow": 8192,
             "maxTokens": 8192,
             "cost": {
               "input": 0,
@@ -109,6 +144,11 @@
             "compat": {
               "supportsTools": true,
               "supportsUsageInStreaming": true
+            },
+            "params": {
+              "num_ctx": 8192,
+              "keep_alive": "30m",
+              "thinking": false
             }
           },
           {
@@ -117,7 +157,7 @@
             "input": [
               "text"
             ],
-            "contextWindow": 32768,
+            "contextWindow": 8192,
             "maxTokens": 8192,
             "cost": {
               "input": 0,
@@ -128,9 +168,15 @@
             "compat": {
               "supportsTools": true,
               "supportsUsageInStreaming": true
+            },
+            "params": {
+              "num_ctx": 8192,
+              "keep_alive": "30m",
+              "thinking": false
             }
           }
-        ]
+        ],
+        "contextWindow": 8192
       },
       "openrouter": {
         "api": "openai-completions",
