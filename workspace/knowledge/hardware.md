@@ -13,7 +13,7 @@ What hardware I run on, and what each profile can/can't do.
 | GPU | none |
 | Disk | 252 GB block device, ~5-15 GB free typical |
 | Network | outbound only, no inbound |
-| User | runs as root (see SECURITY.md for migration plan) |
+| User | runs as root (acceptable for ephemeral container only; PC install should use a dedicated unprivileged user via `openclaw onboard --install-daemon`) |
 
 **Capability**:
 - Pull and run Ollama models up to ~10 GB resident.

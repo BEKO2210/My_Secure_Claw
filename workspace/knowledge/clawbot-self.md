@@ -22,24 +22,42 @@ Self-knowledge. Loaded on demand via memory_search.
 
 ## Configuration ground truth
 
-All ground truth lives in two files:
-- `openclaw.json` — gateway config (declarative)
-- `workspace/` — mind (this directory)
+All runtime ground truth lives under `~/.openclaw/`:
+- `~/.openclaw/openclaw.json` — gateway config, managed by
+  `openclaw onboard` and modified via `openclaw config set <path> <value>`.
+- `~/.openclaw/workspace/` — the mind (overlaid from this repo's
+  `workspace/` via `scripts/install-mind.sh`).
 
 If runtime behaviour disagrees with these → runtime is wrong.
 
-## Model slots
+**Iron rule** (MEMORY.md #12): this repo carries no `openclaw.json`
+override. Config changes via `openclaw config set` only, never by
+patching files in this repo.
 
-Five named slots in `scripts/claw-model.sh` → patches
-`agents.defaults.model.primary` in `openclaw.json` + restarts gateway.
+## Model selection
 
-| Slot       | Provider/Model                              |
-| ---------- | ------------------------------------------- |
-| `cpu`      | `ollama/gemma4:e2b`                         |
-| `gemma`    | `ollama/gemma4:e4b`                         |
-| `phi`      | `ollama/phi4-mini`                          |
-| `gpu-local`| `ollama/qwen2.5:7b-instruct-q4_K_M`         |
-| `cloud`    | `openrouter/openai/gpt-4o-mini` (DORMANT)   |
+PC production model: **`ollama/qwen2.5:7b-instruct-q4_K_M`** (chosen
+during `openclaw onboard`, ~4.4 GB Q4_K_M, fits 8 GB VRAM with KV-cache
+for 8k context, no thinking-mode).
+
+Switch model:
+```
+openclaw models list                                    # show available
+openclaw models set ollama/<other-model>                # switch
+```
+
+OpenClaw handles gateway restart and runtime reconfiguration. No custom
+switcher script.
+
+Common alternates if installed locally:
+- `ollama/gemma4:e2b` — multimodal, smaller (~7 GB), still CPU-viable
+- `ollama/phi4-mini` — text-only, 2.5 GB, lowest-resource fallback
+- `ollama/gemma4` — Gemma 4 default tag (~9.6 GB), what `openclaw
+  onboard` auto-pulls if no model is picked
+
+Cloud providers (OpenRouter etc.) are intentionally **not configured**.
+To activate later: `openclaw configure --section providers` with
+explicit user consent and an API key.
 
 ## Memory model
 
