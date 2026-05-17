@@ -32,6 +32,21 @@ Trigger words for memory_search:
 - "did I tell you X"
 - "look up X in your notes"
 
+## Hosts & access (env-specific)
+
+| Alias       | Host / address               | Purpose                              |
+| ----------- | ---------------------------- | ------------------------------------ |
+| `dev`       | `127.0.0.1` (this container) | Ephemeral dev sandbox                |
+| `pc`        | _TODO: hostname or LAN IP_   | Production target (Windows + WSL2)   |
+| `pc-wsl`    | _TODO: WSL2 hostname_        | WSL2 distro on the PC                |
+| `tailnet`   | _TODO: <name>.ts.net_        | Tailscale tailnet for remote gateway |
+| `ollama`    | `127.0.0.1:11434`            | Local Ollama daemon                  |
+| `gateway`   | `127.0.0.1:18789`            | Local OpenClaw gateway               |
+
+SSH preferences: _user fills in when first ssh'ing from Clawbot is
+needed._ Until then, I treat the PC as a separate machine I have no
+direct access to.
+
 ## Channels (inbound message → me)
 
 - **Telegram** (`channels.telegram`): main human channel. DM policy =

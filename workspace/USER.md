@@ -25,8 +25,8 @@ the user's nod or correction before I treat them as iron.
 
 - **GPU**: NVIDIA RTX 3070, **8 GB VRAM** (Ampere architecture, CUDA 8.6)
 - **RAM**: 16 GB (tight — don't suggest models that need ≥10 GB resident)
-- **OS**: **(TODO confirm)** — Linux native or Windows + WSL2 with CUDA
-  passthrough?
+- **OS**: **Windows + WSL2** with NVIDIA CUDA passthrough (confirmed
+  2026-05-17). Native Windows-Treiber installiert, Linux-CLI über WSL.
 - All inference must run **fully on GPU** (no CPU offload — 16 GB RAM is
   tight)
 - Local-only is the rule. Cloud is a documented dormant slot, not in use.
@@ -38,27 +38,28 @@ the user's nod or correction before I treat them as iron.
 - Used for config tuning, doc writing, web research, light bench
 - NOT usable for full agent turns (>200 s per turn)
 
-## Dev stack & style **(TODO confirm)**
+## Dev stack & style
 
-Inferred from this repo + the way the user writes. Confirm or correct in
-next turn:
+**I start empty here.** The user has "viel installiert was Coden angeht"
+and prefers to teach me their stack through conversation, not have me
+assume from one repo.
 
-- **Languages**: Bash + Node.js/TypeScript heavy (this project), Python
-  likely in other projects
-- **Editor**: unknown — maybe VS Code, maybe nvim, maybe JetBrains
-- **Shell**: zsh or bash; no shell-prompt customisation observed
-- **Git workflow**: feature-branch → PR → user merges manually. **Never
-  push to main directly.** Likes squash-merge (small commit graph on
-  main).
-- **Commit style**: imperative subject, max ~70 chars, optional body
-  with bullet points explaining WHY. No emoji prefixes.
-- **PR style**: short summary, bullet test plan, link to session.
-- **CI**: not configured in this repo. Externally maybe relies on local
-  validation + CodeRabbit for review.
-- **Containerisation**: comfortable with Docker, has used ephemeral
-  cloud containers (Claude Code Web).
-- **Package manager preference**: pnpm (configured in `openclaw.json` →
-  `skills.install.nodeManager`).
+What I have observed *in this repo only* (not generalised, do not extend
+to other projects unless the user confirms):
+
+- This project uses Bash + Node.js/TypeScript and pnpm (per
+  `openclaw.json` → `skills.install.nodeManager`).
+- Git workflow on this repo: feature-branch → PR → user merges manually.
+  Never push to main directly (per MEMORY.md iron law).
+- Commit style on this repo: imperative subject ~70 chars, optional body
+  with bullets explaining WHY.
+
+When the user mentions a new language, framework, editor, shell, project,
+or workflow → I log it to today's daily note and propose a USER.md
+update next heartbeat. I do not pattern-match across projects.
+
+Open invitation: when the user wants me to know something durably about
+their setup, they say so or paste it in.
 
 ## Working style with me
 
@@ -124,13 +125,11 @@ populate as they come up in conversation.
 - Multi-paragraph docstrings, comments that explain WHAT instead of WHY
 - Wallpapering over real bugs with longer timeouts
 
-## Open questions for the user
+## Open questions for the user (still open)
 
-- **OS on the PC** (Linux native vs Windows + WSL2)
 - **Other channels** beyond Telegram (Discord, Slack, Signal, iMessage…?)
-- **Existing projects** Clawbot should know about (codebase paths,
-  recurring tasks, languages beyond German+English)
-- **Editor / IDE** (so I know whether to suggest VS Code tasks vs
-  Makefile targets vs zellij keybinds)
+- **Existing projects** the user wants me to know about (only if and when
+  they decide — see "Dev stack" above; I do not infer)
 - **Working hours / timezone** (so heartbeat doesn't fire at 3 AM
-  uselessly — though I just won't notify, so this is low-stakes)
+  uselessly — low-stakes since the heartbeat is silent by default)
+- **Tailscale tailnet name** (for production gateway bind)
