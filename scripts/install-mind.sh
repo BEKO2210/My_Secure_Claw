@@ -35,11 +35,27 @@ cp -a "$DEST" "$BACKUP"
 
 echo "==> copying mind files from $SRC into $DEST"
 # Skip runtime/state dirs that openclaw owns
-rsync -a \
-  --exclude='.openclaw/' \
-  --exclude='state/' \
-  --exclude='memory/' \
-  "$SRC/" "$DEST/"
+if command -v rsync >/dev/null 2>&1; then
+  rsync -a \
+    --exclude='.openclaw/' \
+    --exclude='state/' \
+    --exclude='memory/' \
+    "$SRC/" "$DEST/"
+else
+  # Portable fallback when rsync isn't installed
+  ( cd "$SRC" && \
+    find . -type f \
+      ! -path './.openclaw/*' \
+      ! -path './state/*' \
+      ! -path './memory/*' \
+      -print0 \
+    | while IFS= read -r -d '' f; do
+        target="$DEST/${f#./}"
+        mkdir -p "$(dirname "$target")"
+        cp -a "$f" "$target"
+      done
+  )
+fi
 
 echo "==> rebuilding memory_search index"
 node "$REPO_ROOT/openclaw/openclaw.mjs" memory index || {
